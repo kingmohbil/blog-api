@@ -15,7 +15,7 @@ server.use(express.urlencoded({ extended: true }));
 server.use(express.json());
 server.use(cors());
 server.use(passport.initialize());
-server.use(methodOverride('_method'));
+
 server.use('/', signupRoute);
 server.use('/', loginRoute);
 server.use('/', postsRoute);
