@@ -1,84 +1,87 @@
+// requiring the `body` and `validationResult` to validate the
+// data before adding it to the database
 const { body, validationResult } = require('express-validator');
+// requiring `bcryptjs` to hash the password before storing it in the database
 const bcrypt = require('bcryptjs');
+// requiring the `debug` and sets the value to database for debugging the database operations
 const debug = require('debug')('database');
+// requiring the `users` model
 const users = require('../models/users-model');
 exports.createUser = [
   // validating and sanitizing the user input before creating a new user
-  body('firstName', '* First name can`t be empty')
+  body('firstName', `first name can't be empty`)
     .trim()
     .isLength({ min: 1 })
     .isLength({ max: 30 })
-    .withMessage('* First name can`t exceed 30 characters')
+    .withMessage(`first name can't exceed 30 characters`)
     .escape(),
-  body('lastName', '* Last name can`t be empty')
+  body('lastName', `last name can't be empty`)
     .trim()
     .isLength({ min: 1 })
     .isLength({ max: 30 })
-    .withMessage('* Last name can`t exceed 30 characters')
+    .withMessage(`last name can't exceed 30 characters`)
     .escape(),
-  body('email', '* Email must be a valid email')
+  body('email', 'email must be a valid email')
     .trim()
     .normalizeEmail()
     .isEmail()
     .escape(),
   body('email').custom(async (email) => {
     const exist = await users.exists({ email });
-    if (exist) throw new Error('* Email already exists');
+    if (exist) throw new Error(`${email} already exists`);
     return true;
   }),
-  body('username', '* Username can`t be empty')
+  body('username', `username can't be empty`)
     .trim()
     .isLength({ min: 1 })
     .isLength({ max: 30 })
-    .withMessage('* Username can`t be empty')
+    .withMessage(`username can't be empty`)
     .escape(),
   body('username').custom(async (username) => {
     const exist = await users.exists({ username });
-    if (exist) throw new Error('* Username already exists');
+    if (exist) throw new Error(`${username} already exists`);
     return true;
   }),
-
-  body('password', '* Password must be at least 8 characters')
+  body('password', 'password must be at least 8 characters')
     .trim()
     .isLength({ min: 8 })
     .isLength({ max: 30 })
-    .withMessage('* Password can`t exceed 30 characters')
+    .withMessage(`password can't exceed 30 characters`)
     .escape(),
   async (req, res) => {
+    debug('starting validation');
     const isValid = validationResult(req);
     if (!isValid.isEmpty()) {
-      res.status(400);
+      debug('inputs are invalid');
       debug(isValid.array());
-      return res.json({
+      return res.status(400).json({
         errors: isValid.array(),
-        message: 'Can`t create user inputs are invalid',
+        message: `can't create user inputs are invalid`,
       });
     }
+    debug('inputs are valid moving to hashing');
+    // destructuring the inputs from the request after the validation
+    const { firstName, lastName, username, password, email } = req.body;
+    // hashing the password
     try {
-      const { firstName, lastName, username, password, email } = req.body;
-      bcrypt.hash(password, 10, async (err, hashedPassword) => {
-        if (err) throw err;
-        const user = await users.create({
-          first_name: firstName,
-          last_name: lastName,
-          email,
-          username,
-          password: hashedPassword,
-        });
-        debug('User created successfully');
-        res.status(201);
-        return res.json({
-          user,
-          errors: [],
-          message: 'User created successfully',
-        });
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await users.create({
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        username,
+        password: hashedPassword,
+      });
+      debug('User created successfully');
+      return res.status(201).json({
+        errors: [],
+        message: 'user created successfully',
       });
     } catch (error) {
       debug(error.message);
-      res.status(500);
-      return res.json({
-        errors: [error.message],
-        message: 'Error while creating the user',
+      return res.status(500).json({
+        errors: [{ msg: error.message }],
+        message: 'error occurred while creating the user',
       });
     }
   },
