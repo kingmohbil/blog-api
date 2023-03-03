@@ -5,12 +5,20 @@ const verifyToken = require('../controllers/verify-token');
 
 const router = express.Router();
 
-router.get('/posts', controller.getAllPosts);
+router.get('/', controller.getAllPosts);
 
-router.get('/posts/:postId', controller.getOnePost);
+router.get('/:postId', controller.getOnePost);
 
-router.post('/posts', verifyToken, controller.addPost);
+router.post('/', verifyToken, controller.addPost);
 
-router.delete('/posts/:postId', verifyToken, controller.deletePost);
+router.delete('/:postId', verifyToken, controller.deletePost);
+
+router.post('/:postId/comments', verifyToken, controller.addComment);
+
+router.delete(
+  '/:postId/comments/:commentId',
+  verifyToken,
+  controller.deleteComment
+);
 
 module.exports = router;
