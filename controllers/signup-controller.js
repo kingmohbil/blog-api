@@ -49,17 +49,13 @@ exports.createUser = [
     .withMessage(`password can't exceed 30 characters`)
     .escape(),
   async (req, res) => {
-    debug('starting validation');
     const isValid = validationResult(req);
     if (!isValid.isEmpty()) {
-      debug('inputs are invalid');
-      debug(isValid.array());
       return res.status(400).json({
         errors: isValid.array(),
         message: `can't create user inputs are invalid`,
       });
     }
-    debug('inputs are valid moving to hashing');
     // destructuring the inputs from the request after the validation
     const { firstName, lastName, username, password, email } = req.body;
     // hashing the password
@@ -74,7 +70,6 @@ exports.createUser = [
       });
       debug('User created successfully');
       return res.status(201).json({
-        errors: [],
         message: 'user created successfully',
       });
     } catch (error) {
