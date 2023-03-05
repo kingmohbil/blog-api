@@ -9,7 +9,7 @@ const initializePassport = (passport) => {
         const user = await users.findOne({ username });
         if (!user) {
           debug('Username can`t found');
-          return done(null, false, { message: 'Username can`t found' });
+          return done(null, false, { message: 'Username can`t be found' });
         }
         bcrypt.compare(password, user.password, (err, success) => {
           if (err) throw err;
