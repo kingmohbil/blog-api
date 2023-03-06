@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "private": true,
   "scripts": {
+    "start": "nodemon app.js",
     "devStart": "nodemon app.js"
   },
   "repository": {
@@ -15,6 +17,9 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/kingmohbil/blog-website/issues"
+  },
+  "engines": {
+    "node": ">=18.12.1"
   },
   "homepage": "https://github.com/kingmohbil/blog-website#readme",
   "dependencies": {
