@@ -38,7 +38,8 @@ exports.login = [
           return res.status(500).json({
             errors: [{ msg: err.message }],
           });
-        if (!user) return res.status(400).json({ errors: [{ msg: info }] });
+        if (!user)
+          return res.status(400).json({ errors: [{ msg: info.message }] });
         if (user) {
           const token = jwt.sign(user.toJSON(), process.env.TOKEN_SECRET_KEY, {
             expiresIn: '2w',
