@@ -203,7 +203,7 @@ exports.addComment = [
     const isValid = validationResult(req);
     //! checking for Errors
     if (!isValid.isEmpty()) {
-      res.status(400).json({
+      return res.status(400).json({
         errors: isValid.array(),
         message: 'error when validating the inputs',
       });
