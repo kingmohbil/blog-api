@@ -85,8 +85,24 @@ exports.getUserPosts = (req, res) => {
         .json({ errors: [{ msg: err.message }], message: 'token is invalid' });
 
     try {
-      const posts = await postsModel.find({ author: user._id });
-      res.json({ user });
+      const posts = await postsModel
+        .find({ author: user._id }, null, {
+          sort: { created_at: -1 },
+        })
+        .populate({
+          path: 'author',
+          select: { username: 1, _id: 0 },
+        })
+        .populate({
+          path: 'comments',
+          select: { author: 1, text: 1, created_at: 1 },
+          populate: {
+            path: 'author',
+            select: { username: 1, _id: 0 },
+          },
+        });
+
+      res.json({ posts });
     } catch (error) {}
   });
 };
