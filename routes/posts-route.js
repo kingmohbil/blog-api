@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.get('/', controller.getAllPosts);
 
+router.get('/user', verifyToken, controller.getUserPosts);
+
 router.get('/:postId', controller.getOnePost);
 
 router.post('/', verifyToken, controller.addPost);

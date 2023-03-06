@@ -77,6 +77,22 @@ exports.getOnePost = async (req, res) => {
 
 //! ------------------------------------ -----------------------------------
 
+exports.getUserPosts = (req, res) => {
+  jwt.verify(req.token, process.env.TOKEN_SECRET_KEY, async (err, user) => {
+    if (err)
+      return res
+        .status(403)
+        .json({ errors: [{ msg: err.message }], message: 'token is invalid' });
+
+    try {
+      const posts = await postsModel.find({ author: user._id });
+      res.json({ user });
+    } catch (error) {}
+  });
+};
+
+//! ------------------------------------ -----------------------------------
+
 exports.addPost = [
   body('title')
     .trim()
