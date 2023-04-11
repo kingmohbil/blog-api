@@ -1,6 +1,6 @@
 # blog-api
 
-### This API you can create posts and add comments once you are registered to our API after signing in you will receive a jsonwebtoken for authorization you should store it in a safe place because in each DELETE and POST request you must supply it in the authorization header as a Bearer < token > and send the data as JSON object, note that the token expires after 2 weeks of it's creation.
+### This API you can create posts and add comments once you are registered to our API after signing in you will receive a jsonwebtoken for authorization you should store it in a safe place because in each DELETE and POST request you must supply it in the authorization header as a Bearer < token > and send the data as JSON object, note that the token expires after 2 weeks of it's creation, and the two parts for testing the projects the first one that displays the post you can find <a href="https://kingmohbil.github.io/blog-site/">here</a>, the second part that you can create the posts you can find in <a href="https://kingmohbil.github.io/blog-form-page">here</a>.
 
 ---
 
